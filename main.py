@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 from typing import List
-import sqlite3
 
+from autocomplete import AutoCompleter
+
+import sqlite3
 
 @dataclass
 class AutoCompleteData:
@@ -9,8 +11,6 @@ class AutoCompleteData:
     source_text: str
     offset: int
     score: int
-
-
 # methods that you need to define by yourself
 
 
@@ -30,4 +30,6 @@ def get_best_k_completions(prefix: str) -> List[AutoCompleteData]:
 
 
 if __name__ == '__main__':
-    pass
+    lines = initialization("text.txt")
+    print(lines[0])
+
