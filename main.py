@@ -21,6 +21,8 @@ class AutoCompleteData:
 def build_database():
     pass
 
+def get_score(e):
+    return e.score
 
 def initialization(path):
     f = open(path, 'r', encoding='utf-8')
@@ -52,7 +54,7 @@ if __name__ == '__main__':
     result = get_best_k_completions(input("Enter Search:"))
 
     if result:
-        print(result)
+        print(result.sort(key=get_score)[:5])
     else:
         print("")
 
