@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 from typing import List
 from pathlib import Path
+
 from autocomplete import AutoCompleter
 
-MATCHES = set()
+MY_LIST = []
+
 
 @dataclass
 class AutoCompleteData:
@@ -11,6 +13,8 @@ class AutoCompleteData:
     source_text: str
     offset: int
     score: int
+
+
 # methods that you need to define by yourself
 
 
@@ -26,11 +30,12 @@ def initialization(path):
 
 
 def get_best_k_completions(prefix: str) -> List[AutoCompleteData]:
-    print(prefix)
-
-    for sentence in MATCHES:
-        if prefix in sentence:
-            print(sentence)
+    temp = []
+    for file in MY_LIST:
+        for sentence in file.sentences:
+            if prefix in sentence:
+                temp.append(AutoCompleteData(sentence, file.file_name, len(prefix), len(prefix) * 2))
+    return temp
 
 
 @dataclass
@@ -41,14 +46,13 @@ class TextData:
 
 if __name__ == '__main__':
 
-    my_list = list
+    with open(r'text.txt', encoding='utf-8') as f:
+        MY_LIST.append(TextData(str(f), [line for line in f]))
 
-    files = list(Path("Archive").rglob("*.[tT][xX][tT]"))
-    for file in files:
+    result = get_best_k_completions(input("Enter Search:"))
 
-        with open(file, 'r', encoding='utf-8') as f:
-            t = TextData(file, {line for line in f})
-            # MATCHES.update({line for line in f})
-
-    print(get_best_k_completions(input("Enter Search:")))
+    if result:
+        print(result)
+    else:
+        print("")
 
