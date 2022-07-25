@@ -28,6 +28,8 @@ def get_best_k_completions(prefix: str) -> List[AutoCompleteData]:
 
 if __name__ == '__main__':
     from pathlib import Path
-    result = list(Path("Archive").rglob("*.[tT][xX][tT]"))
-    print(result)
-
+    files = list(Path("Archive").rglob("*.[tT][xX][tT]"))
+    for file in files:
+        with open(file, 'r', encoding='utf-8') as f:
+            all_lines = f.readlines()
+            pass
