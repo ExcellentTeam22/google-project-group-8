@@ -3,7 +3,7 @@ from typing import List
 
 from autocomplete import AutoCompleter
 
-import sqlite3       
+import sqlite3
 
 @dataclass
 class AutoCompleteData:
@@ -29,6 +29,7 @@ def get_best_k_completions(prefix: str) -> List[AutoCompleteData]:
     pass
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
+    lines = initialization("text.txt")
+    print(lines[0])
 
-    pass
