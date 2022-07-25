@@ -2,12 +2,7 @@ from dataclasses import dataclass
 from typing import List
 from string import ascii_lowercase
 from pathlib import Path
-import string
-
 # from autocomplete import AutoCompleter
-
-MY_LIST = []
-
 
 @dataclass
 class AutoCompleteData:
@@ -17,76 +12,81 @@ class AutoCompleteData:
     score: int
 
 
-# methods that you need to define by yourself
+class TrieNode:
+    def __init__(self, char):
+        self.char = char
+        self.is_end = False
+        self.counter = 0
+        self.children = {}
 
 
-def build_database():
-    pass
+class Trie(object):
+    def __init__(self):
+        self.root = TrieNode("")
 
+    def insert(self, word):
+        node = self.root
 
-def get_score(e):
-    return e.score
+        for char in word:
+            if char in node.children:
+                node = node.children[char]
+            else:
+                new_node = TrieNode(char)
+                node.children[char] = new_node
+                node = new_node
+        node.is_end = True
+        node.counter += 1
 
+    def dfs(self, node, prefix):
+        if node.is_end:
+            self.output.append((prefix + node.char, node.counter))
 
-def initialization(path):
-    f = open(path, 'r', encoding='utf-8')
-    all_lines = f.readlines()
-    f.close()
-    return all_lines
+        for child in node.children.values():
+            self.dfs(child, prefix + node.char)
+
+    def search(self, prefix):
+        self.output = []
+        node = self.root
+        for char in prefix:
+            if char in node.children:
+                node = node.children[char]
+            else:
+                return []
+        self.dfs(node, prefix[:-1])
+        return sorted(self.output, key=lambda x: x[1], reverse=True)
 
 
 def get_best_k_completions(prefix: str) -> List[AutoCompleteData]:
     pass
-    # temp = []
-    # for file in MY_LIST:
-    #     for sentence in file.sentences:
-    #         if prefix.lower() in sentence.lower():
-    #             temp.append(AutoCompleteData(sentence, file.file_name, len(prefix), len(prefix) * 2))
-    # return temp
 
 
-@dataclass
-class TextData:
-    file_name: str
-    sentences: List[str]
-
-
-def get_matches(current_sentence, matches):
-    for sentences in MY_LIST:
-        for sentence in sentences.sentences:
-            if current_sentence in sentence:
-                matches.append(AutoCompleteData(sentence, sentences.file_name, 20, 20))
-
-
-def compare(the_input: str):
-    matches = []
-    get_matches(my_input, matches)
-
-    for i in range(len(the_input)):
-        print(i)
-        remove_cell = the_input[:i] + the_input[i + 1:]
-        get_matches(remove_cell, matches)
-
-        for c in ascii_lowercase:
-            add_cell = the_input[:i] + c + the_input[i+1:]
-            print(add_cell)
-            get_matches(add_cell, matches)
-        for c in ascii_lowercase:
-            if c != the_input[i]:
-                change_cell = the_input[:i] + c + the_input[i + 1:]
-                get_matches(change_cell, matches)
-    return matches
+def insert_to_tree(t: Trie):
+    files = list(Path("Archive").rglob("*.[tT][xX][tT]"))
+    for file in files:
+        with open(file, 'r', encoding='utf-8') as f:
+            for line in f.readlines():
+                for word in line.split():
+                    if word.isalpha():
+                        t.insert(word.lower())
 
 
 if __name__ == '__main__':
+    tree = Trie()
+    insert_to_tree(tree)
 
-    with open(r'text.txt', encoding='utf-8') as f:
-        MY_LIST.append(TextData(str(f), [line for line in f]))
+    inp = input("Enter search: ")
+    print(tree.search(inp))
 
-    my_input = input("Enter Search:")
-    result = get_best_k_completions(my_input)
 
-    if result:
-        print(result)
-    else:
-        compare(my_input)
+
+
+
+# def get_score(e):
+#     return e.score
+#
+#
+# def initialization(path):
+#     f = open(path, 'r', encoding='utf-8')
+#     all_lines = f.readlines()
+#     f.close()
+#     return all_lines
