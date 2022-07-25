@@ -39,17 +39,16 @@ class TextData:
     sentences: List[str]
 
 
-
 if __name__ == '__main__':
 
     my_list = list
 
     files = list(Path("Archive").rglob("*.[tT][xX][tT]"))
     for file in files:
-        t = TextData(file)
-        with open(file, 'r', encoding='utf-8') as f:
 
-            MATCHES.update({line for line in f})
+        with open(file, 'r', encoding='utf-8') as f:
+            t = TextData(file, {line for line in f})
+            # MATCHES.update({line for line in f})
 
     print(get_best_k_completions(input("Enter Search:")))
 
