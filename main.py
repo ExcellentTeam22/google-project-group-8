@@ -35,7 +35,7 @@ def get_best_k_completions(prefix: str) -> List[AutoCompleteData]:
     temp = []
     for file in MY_LIST:
         for sentence in file.sentences:
-            if prefix in sentence:
+            if prefix.lower() in sentence.lower():
                 temp.append(AutoCompleteData(sentence, file.file_name, len(prefix), len(prefix) * 2))
     return temp
 
