@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 from pathlib import Path
-
+import string
 from autocomplete import AutoCompleter
 
 MY_LIST = []
@@ -20,6 +20,7 @@ class AutoCompleteData:
 
 def build_database():
     pass
+
 
 def get_score(e):
     return e.score
@@ -46,15 +47,24 @@ class TextData:
     sentences: List[str]
 
 
+def compare(the_input: str):
+
+    for ch in the_input:
+        for letter in string.ascii_lowercase[:26]:
+
+            print(letter)
+
+
 if __name__ == '__main__':
 
     with open(r'text.txt', encoding='utf-8') as f:
         MY_LIST.append(TextData(str(f), [line for line in f]))
 
-    result = get_best_k_completions(input("Enter Search:"))
+    my_input = input("Enter Search:")
+    result = get_best_k_completions(my_input)
 
     if result:
-        print(result.sort(key=get_score)[:5])
+        print(result)
     else:
-        print("")
+        compare(my_input)
 
