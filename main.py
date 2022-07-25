@@ -1,9 +1,6 @@
 from dataclasses import dataclass
 from typing import List
 
-from autocomplete import AutoCompleter
-
-import sqlite3
 
 @dataclass
 class AutoCompleteData:
@@ -30,6 +27,7 @@ def get_best_k_completions(prefix: str) -> List[AutoCompleteData]:
 
 
 if __name__ == '__main__':
-    lines = initialization("text.txt")
-    print(lines[0])
+    from pathlib import Path
+    result = list(Path("Archive").rglob("*.[tT][xX][tT]"))
+    print(result)
 
