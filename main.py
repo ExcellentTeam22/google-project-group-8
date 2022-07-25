@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import List
+from string import ascii_lowercase
 from pathlib import Path
 import string
 
@@ -61,19 +62,20 @@ def compare(the_input: str):
     matches = []
     get_matches(my_input, matches)
 
-    temp = the_input
-    for i in range(len(temp)):
-        remove_cell = temp[:i] + temp[i + 1:]
+    for i in range(len(the_input)):
+        print(i)
+        remove_cell = the_input[:i] + the_input[i + 1:]
         get_matches(remove_cell, matches)
-        from string import ascii_lowercase
+
         for c in ascii_lowercase:
-            add_cell = temp[:i] + c + temp[i:]
+            add_cell = the_input[:i] + c + the_input[i+1:]
+            print(add_cell)
             get_matches(add_cell, matches)
         for c in ascii_lowercase:
-            if c != temp[i]:
-                change_cell = temp[:i] + c + temp[i + 1:]
+            if c != the_input[i]:
+                change_cell = the_input[:i] + c + the_input[i + 1:]
                 get_matches(change_cell, matches)
-        return matches
+    return matches
 
 
 if __name__ == '__main__':
