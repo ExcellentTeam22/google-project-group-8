@@ -1,0 +1,7 @@
+Write a callable Python class which will implement autocomplete functionality. Your class should take a list of words to be a vocabulary as an argument on initialization. It should also accept a max_completions argument, which controls the maximum number of suggested completions for a given string. The max_completions argument should default to 5.
+
+The input to the call method for the class will be the string the user has typed.
+When called, this class should return a list of at most max_completions suggested words.
+If there are more available completions than allowed, you are free to decide which to return.
+If there are no completions available, you should return an empty list. Your class should handle
+inappropriate inputs correctly.
