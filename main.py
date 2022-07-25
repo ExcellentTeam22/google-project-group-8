@@ -2,7 +2,8 @@ from dataclasses import dataclass
 from typing import List
 from pathlib import Path
 import string
-from autocomplete import AutoCompleter
+
+# from autocomplete import AutoCompleter
 
 MY_LIST = []
 
@@ -25,6 +26,7 @@ def build_database():
 def get_score(e):
     return e.score
 
+
 def initialization(path):
     f = open(path, 'r', encoding='utf-8')
     all_lines = f.readlines()
@@ -33,12 +35,13 @@ def initialization(path):
 
 
 def get_best_k_completions(prefix: str) -> List[AutoCompleteData]:
-    temp = []
-    for file in MY_LIST:
-        for sentence in file.sentences:
-            if prefix.lower() in sentence.lower():
-                temp.append(AutoCompleteData(sentence, file.file_name, len(prefix), len(prefix) * 2))
-    return temp
+    pass
+    # temp = []
+    # for file in MY_LIST:
+    #     for sentence in file.sentences:
+    #         if prefix.lower() in sentence.lower():
+    #             temp.append(AutoCompleteData(sentence, file.file_name, len(prefix), len(prefix) * 2))
+    # return temp
 
 
 @dataclass
@@ -47,12 +50,30 @@ class TextData:
     sentences: List[str]
 
 
+def get_matches(current_sentence, matches):
+    for sentences in MY_LIST:
+        for sentence in sentences.sentences:
+            if current_sentence in sentence:
+                matches.append(AutoCompleteData(sentence, sentences.file_name, 20, 20))
+
+
 def compare(the_input: str):
+    matches = []
+    get_matches(my_input, matches)
 
-    for ch in the_input:
-        for letter in string.ascii_lowercase[:26]:
-
-            print(letter)
+    temp = the_input
+    for i in range(len(temp)):
+        remove_cell = temp[:i] + temp[i + 1:]
+        get_matches(remove_cell, matches)
+        from string import ascii_lowercase
+        for c in ascii_lowercase:
+            add_cell = temp[:i] + c + temp[i:]
+            get_matches(add_cell, matches)
+        for c in ascii_lowercase:
+            if c != temp[i]:
+                change_cell = temp[:i] + c + temp[i + 1:]
+                get_matches(change_cell, matches)
+        return matches
 
 
 if __name__ == '__main__':
@@ -67,4 +88,3 @@ if __name__ == '__main__':
         print(result)
     else:
         compare(my_input)
-
