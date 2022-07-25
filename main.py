@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from typing import List
 
 
+MATCHES = set()
+
 @dataclass
 class AutoCompleteData:
     completed_sentence: str
@@ -31,5 +33,6 @@ if __name__ == '__main__':
     files = list(Path("Archive").rglob("*.[tT][xX][tT]"))
     for file in files:
         with open(file, 'r', encoding='utf-8') as f:
-            all_lines = f.readlines()
-            pass
+            MATCHES.update({line for line in f})
+
+    print(get_best_k_completions(input("Enter Search")))
