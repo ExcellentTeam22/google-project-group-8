@@ -26,8 +26,10 @@ class Trie(object):
         self.root = TrieNode("")
 
     def insert(self, line):
+
         node = self.root
-        for word in line.split():
+        g=line.split()
+        for word in g:
             if word in node.children:
                 node = node.children[word]
             else:
@@ -38,10 +40,11 @@ class Trie(object):
         node.counter += 1
 
     def dfs(self, node, prefix):
+
         if node.is_end:
-            self.output.append((prefix + node.char, node.counter))
+            self.output.append((prefix+" "+node.char, node.counter))
         for child in node.children.values():
-            self.dfs(child, prefix + node.char)
+            self.dfs(child, prefix+" "+node.char)
 
     def search(self, prefix):
         self.output = []
@@ -60,7 +63,11 @@ def insert_to_tree(t: Trie, dictionary: dict):
     for file in files:
         with open(file, 'r', encoding='utf-8') as f:
             for line in f.readlines():
-                t.insert(line)
+                st=line
+                for i in range(1,len(st.split())-1):
+                    t.insert(st)
+                    st=st.split(' ', 1)[1]
+
                 # for word in line.split():
                 #     if word.isalpha():
                 #         t.insert(word.lower())
