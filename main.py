@@ -90,11 +90,15 @@ if __name__ == '__main__':
     tree = Trie()
     dictionary_filename_sentences = {}
     insert_to_tree(tree, dictionary_filename_sentences)
-
-    inp = input("Enter search: ")
-    while inp != '#':
+    inp = ""
+    # inp = input("Enter search: ")
+    while True:
+        current = input(f"Enter search: {inp}")
+        if current == '#':
+            inp = input("enter new search pattern: ")
+        else:
+            inp += current
         print(tree.search(inp))
-        inp = input("Enter search: ")
 
 
 
