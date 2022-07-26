@@ -39,9 +39,9 @@ class Trie(object):
 
     def dfs(self, node, prefix):
         if node.is_end:
-            self.output.append((prefix + node.char, node.counter))
+            self.output.append((prefix + ' ' + node.char, node.counter))
         for child in node.children.values():
-            self.dfs(child, prefix + node.char)
+            self.dfs(child, prefix + ' ' + node.char)
 
     def search(self, prefix):
         self.output = []
@@ -81,7 +81,7 @@ if __name__ == '__main__':
     inp = input("Enter search: ").strip()
     while inp != '#':
         print(tree.search(inp))
-        inp = input("Enter search: ")
+        inp = input("Enter search: ").strip()
 
 
 
