@@ -1,3 +1,4 @@
+import string
 from dataclasses import dataclass
 
 MAX_QUERIES = 5
@@ -62,7 +63,21 @@ class Trie(object):
                         completed_words = False
                         list_of_children.append(child_node)
                 if not found_word_contains_last_word_pref:
-                    return []  # here we need to delete/insert/replace a character
+                        for child in node.children:
+                            if len(set(child) & set(word)) == len(child):# we need to delete a letter
+                                for letter in word:
+                                    if word.replace(letter, "") == child:
+                                        prefix=prefix.replace((word,child))
+
+                            else:
+                                if len(child) == len(word):  # we need to change a letter
+                                    for letter in word:
+                                        for letter_in_alphabet in string.ascii_lowercase:
+                                            if word.replace(letter, letter_in_alphabet) == child:
+                                                prefix = prefix.replace(word, child)
+                                else:
+                                    break
+                            return []  # here we need to delete/insert/replace a character
 
         prefix = prefix if completed_words else prefix.rsplit(' ', 1)[0]
         if not completed_words:
