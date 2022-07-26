@@ -5,6 +5,8 @@ from pathlib import Path
 # from autocomplete import AutoCompleter
 
 
+MAX_QUERIES = 5
+
 @dataclass
 class AutoCompleteData:
     completed_sentence: str
@@ -38,22 +40,22 @@ class Trie(object):
         node.counter += 1
 
     def dfs(self, node, prefix):
-
         if node.is_end:
             self.output.append((prefix + " " + node.char, node.counter))
         for child in node.children.values():
             self.dfs(child, node.char)
 
-    def search(self, prefix, last_word_prefix):
+    def search(self, prefix):
         self.output = []
         node = self.root
         for word in prefix.split():
             if word in node.children:
                 node = node.children[word]
             else:
-                search_complete_sentences_by_last_word(node, last_word_prefix)
-                # return []
-        self.dfs(node, prefix[:-1])
+                return []
+        self.dfs(node, prefix)
+        # if len(self.output) < MAX_QUERIES:
+        #     search_complete_sentences_by_last_Fword(node, last_word_prefix)
         return sorted(self.output, key=lambda x: x[1], reverse=True)
 
 
