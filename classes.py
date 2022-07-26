@@ -24,7 +24,7 @@ class Trie(object):
     def __init__(self):
         self.root = TrieNode("")
 
-    def insert(self, line, filename):
+    def insert(self, line: str, filename: str):
         node = self.root
         for word in line.split():
             word = str(word).lower()
@@ -55,14 +55,12 @@ class Trie(object):
             if word in node.children:
                 node = node.children[word]
             else:
-                list_of_children = []
                 found_word_contains_last_word_pref = False
-                for wordd, nodee in node.children.items():
-                    if str(wordd).startswith(last_word_prefix):
+                for child_word, child_node in node.children.items():
+                    if str(child_word).startswith(last_word_prefix):
                         found_word_contains_last_word_pref = True
                         completed_words = False
-                        list_of_children.append(nodee)
-                        # node = node.children[wordd]
+                        list_of_children.append(child_node)
                 if not found_word_contains_last_word_pref:
                     return []  # here we need to delete/insert/replace a character
 
@@ -72,8 +70,5 @@ class Trie(object):
                 self.dfs(n, f"{prefix} {n.word}", output)
         else:
             self.dfs(node, prefix, output)
-
-        # prefix = prefix if completed_words else prefix.rsplit(' ', 1)[0]
-        # self.dfs(node, prefix)
         # if len(self.output) < MAX_QUERIES:
         return sorted(output, key=lambda x: x[1], reverse=True)
