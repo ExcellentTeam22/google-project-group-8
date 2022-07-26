@@ -42,7 +42,7 @@ class Trie(object):
         if node.is_end:
             self.output.append((prefix + " " + node.char, node.counter))
         for child in node.children.values():
-            self.dfs(child, prefix + " " + node.char)
+            self.dfs(child, node.char)
 
     def search(self, prefix, last_word_prefix):
         self.output = []
