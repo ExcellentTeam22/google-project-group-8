@@ -13,7 +13,7 @@ class AutoCompleteData:
 
 class TrieNode:
     def __init__(self, word: str):
-        self.word = word
+        self.word = str(word).lower()
         self.is_end = False
         self.counter = 0
         self.children = {}
@@ -27,6 +27,7 @@ class Trie(object):
     def insert(self, line, filename):
         node = self.root
         for word in line.split():
+            word = str(word).lower()
             if word in node.children:
                 node = node.children[word]
             else:
@@ -41,23 +42,24 @@ class Trie(object):
         if node.is_end:
             self.output.append((prefix, node.counter, node.filename))
         for child in node.children.values():
-            self.dfs(child, prefix + " " + child.word)
+            self.dfs(child, f"{prefix} {child.word}")
 
     def search(self, prefix: str, last_word_prefix: str):
         completed_words = True
         self.output = []
         node = self.root
         for word in prefix.split():
+            word = str(word).lower()
             if word in node.children:
                 node = node.children[word]
             else:
                 found_word_contains_last_word_pref = False
-                for n in node.children:
+                for n in node.children.keys():
                     if str(n).startswith(last_word_prefix):
                         found_word_contains_last_word_pref = True
                         completed_words = False
                 if not found_word_contains_last_word_pref:
-                    return []
+                    return []  # here we need to delete/insert/replace a character
 
         prefix = prefix if completed_words else prefix.rsplit(' ', 1)[0]
         self.dfs(node, prefix)
