@@ -53,15 +53,25 @@ class Trie(object):
             if word in node.children:
                 node = node.children[word]
             else:
+                list_of_children = []
                 found_word_contains_last_word_pref = False
-                for n in node.children.keys():
-                    if str(n).startswith(last_word_prefix):
+                for wordd, nodee in node.children.items():
+                    if str(wordd).startswith(last_word_prefix):
                         found_word_contains_last_word_pref = True
                         completed_words = False
+                        list_of_children.append(nodee)
+                        # node = node.children[wordd]
                 if not found_word_contains_last_word_pref:
                     return []  # here we need to delete/insert/replace a character
 
         prefix = prefix if completed_words else prefix.rsplit(' ', 1)[0]
-        self.dfs(node, prefix)
+        if not completed_words:
+            for n in list_of_children:
+                self.dfs(n, prefix + ' ' + n.word)
+        else:
+            self.dfs(node, prefix)
+
+        # prefix = prefix if completed_words else prefix.rsplit(' ', 1)[0]
+        # self.dfs(node, prefix)
         # if len(self.output) < MAX_QUERIES:
         return sorted(self.output, key=lambda x: x[1], reverse=True)
