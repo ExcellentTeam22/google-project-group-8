@@ -53,11 +53,10 @@ class Trie(object):
             if word in node.children:
                 node = node.children[word]
             else:
-                if last_word_prefix == '\n':
+                if word.startswith(last_word_prefix):
+                    completed_words = False
+                else:
                     return []
-                completed_words = False
-                # else:
-                #     self.search_complete_sentences_by_last_word(node, last_word_prefix)
 
         prefix = prefix if completed_words else prefix.rsplit(' ', 1)[0]
         self.dfs(node, prefix)
