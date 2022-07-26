@@ -3,7 +3,7 @@ from typing import List
 from string import ascii_lowercase
 from pathlib import Path
 # from autocomplete import AutoCompleter
-
+import os
 
 MAX_QUERIES = 5
 
@@ -21,13 +21,14 @@ class TrieNode:
         self.is_end = False
         self.counter = 0
         self.children = {}
+        self.filename = ""
 
 
 class Trie(object):
     def __init__(self):
         self.root = TrieNode("")
 
-    def insert(self, line):
+    def insert(self, line, filename):
         node = self.root
         for word in line.split():
             if word in node.children:
@@ -38,10 +39,11 @@ class Trie(object):
                 node = new_node
         node.is_end = True
         node.counter += 1
+        node.filename = filename
 
     def dfs(self, node, prefix):
         if node.is_end:
-            self.output.append((prefix, node.counter))
+            self.output.append((prefix, node.counter, node.filename))
         for child in node.children.values():
             self.dfs(child, prefix + " " + child.word)
 
@@ -71,12 +73,10 @@ def insert_to_tree(t: Trie, dictionary: dict):
     files = list(Path("Archive").rglob("*.[tT][xX][tT]"))
     for file in files:
         with open(file, 'r', encoding='utf-8') as f:
+            filename = os.path.basename(f.name)
             for line in f.readlines():
-                t.insert(line)
-                # for word in line.split():
-                #     if word.isalpha():
-                #         t.insert(word.lower())
-                #         dictionary[line] = str(file)
+                t.insert(line, filename)
+                # dictionary[line] = filename
 
 
 def get_best_k_completions(prefix: str) -> List[AutoCompleteData]:
@@ -93,7 +93,7 @@ if __name__ == '__main__':
     while True:
         current = input(f"Enter search: {inp}")
         if current == '#':
-            inp = input("enter new search pattern: ")
+            inp = input("Enter new search pattern: ")
         else:
             inp += current
         print(tree.search(inp, inp.rsplit(None, 1)[-1]))
