@@ -16,8 +16,8 @@ class AutoCompleteData:
 
 
 class TrieNode:
-    def __init__(self, char):
-        self.char = char
+    def __init__(self, word):
+        self.word = word
         self.is_end = False
         self.counter = 0
         self.children = {}
@@ -43,19 +43,25 @@ class Trie(object):
         if node.is_end:
             self.output.append((prefix, node.counter))
         for child in node.children.values():
-            self.dfs(child, prefix + " " + child.char)
+            self.dfs(child, prefix + " " + child.word)
 
-    def search(self, prefix):
+    def search(self, prefix, last_word_prefix):
+        completed_words = True
         self.output = []
         node = self.root
         for word in prefix.split():
             if word in node.children:
                 node = node.children[word]
             else:
-                return []
+                if last_word_prefix == '\n':
+                    return []
+                completed_words = False
+                # else:
+                #     self.search_complete_sentences_by_last_word(node, last_word_prefix)
+
+        prefix = prefix if completed_words else prefix.rsplit(' ', 1)[0]
         self.dfs(node, prefix)
         # if len(self.output) < MAX_QUERIES:
-        #     search_complete_sentences_by_last_Fword(node, last_word_prefix)
         return sorted(self.output, key=lambda x: x[1], reverse=True)
 
 
@@ -65,10 +71,6 @@ def insert_to_tree(t: Trie, dictionary: dict):
         with open(file, 'r', encoding='utf-8') as f:
             for line in f.readlines():
                 t.insert(line)
-                # st = line
-                # for i in range(1, len(st.split()) - 1):
-                #     t.insert(st)
-                #     st = st.split(' ', 1)[1]
 
                 # for word in line.split():
                 #     if word.isalpha():
@@ -81,24 +83,19 @@ def get_best_k_completions(prefix: str) -> List[AutoCompleteData]:
     pass
 
 
-def search_complete_sentences_by_last_word(node, last_word_prefix):
-
-    pass
-
-
 if __name__ == '__main__':
     tree = Trie()
     dictionary_filename_sentences = {}
     insert_to_tree(tree, dictionary_filename_sentences)
     inp = ""
-    # inp = input("Enter search: ")
+
     while True:
         current = input(f"Enter search: {inp}")
         if current == '#':
             inp = input("enter new search pattern: ")
         else:
             inp += current
-        print(tree.search(inp))
+        print(tree.search(inp, inp.rsplit(None, 1)[-1]))
 
 
 
