@@ -59,8 +59,9 @@ def insert_to_tree(t: Trie, dictionary: dict):
     files = list(Path("Archive").rglob("*.[tT][xX][tT]"))
     for file in files:
         with open(file, 'r', encoding='utf-8') as f:
-            for line in f.readlines():
-                t.insert(line)
+            for line in f:
+                if len(line.strip()) > 1:
+                    t.insert(line.strip())
                 # for word in line.split():
                 #     if word.isalpha():
                 #         t.insert(word.lower())
@@ -77,7 +78,7 @@ if __name__ == '__main__':
     dictionary_filename_sentences = {}
     insert_to_tree(tree, dictionary_filename_sentences)
 
-    inp = input("Enter search: ")
+    inp = input("Enter search: ").strip()
     while inp != '#':
         print(tree.search(inp))
         inp = input("Enter search: ")
