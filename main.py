@@ -25,14 +25,14 @@ class Trie(object):
     def __init__(self):
         self.root = TrieNode("")
 
-    def insert(self, word):
+    def insert(self, line):
         node = self.root
-        for char in word:
-            if char in node.children:
-                node = node.children[char]
+        for word in line.split():
+            if word in node.children:
+                node = node.children[word]
             else:
-                new_node = TrieNode(char)
-                node.children[char] = new_node
+                new_node = TrieNode(word)
+                node.children[word] = new_node
                 node = new_node
         node.is_end = True
         node.counter += 1
@@ -46,23 +46,25 @@ class Trie(object):
     def search(self, prefix):
         self.output = []
         node = self.root
-        for char in prefix:
-            if char in node.children:
-                node = node.children[char]
+        for word in prefix.split():
+            if word in node.children:
+                node = node.children[word]
             else:
                 return []
         self.dfs(node, prefix[:-1])
         return sorted(self.output, key=lambda x: x[1], reverse=True)
 
 
-def insert_to_tree(t: Trie):
+def insert_to_tree(t: Trie, dictionary: dict):
     files = list(Path("Archive").rglob("*.[tT][xX][tT]"))
     for file in files:
         with open(file, 'r', encoding='utf-8') as f:
             for line in f.readlines():
-                for word in line.split():
-                    if word.isalpha():
-                        t.insert(word.lower())
+                t.insert(line)
+                # for word in line.split():
+                #     if word.isalpha():
+                #         t.insert(word.lower())
+                #         dictionary[line] = str(file)
 
 
 def get_best_k_completions(prefix: str) -> List[AutoCompleteData]:
@@ -72,8 +74,8 @@ def get_best_k_completions(prefix: str) -> List[AutoCompleteData]:
 
 if __name__ == '__main__':
     tree = Trie()
-
-    insert_to_tree(tree)
+    dictionary_filename_sentences = {}
+    insert_to_tree(tree, dictionary_filename_sentences)
 
     inp = input("Enter search: ")
     while inp != '#':
