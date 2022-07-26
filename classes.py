@@ -38,15 +38,17 @@ class Trie(object):
         node.counter += 1
         node.filename = filename
 
-    def dfs(self, node: TrieNode, prefix: str):
+    @staticmethod
+    def dfs(node: TrieNode, prefix: str, output):
         if node.is_end:
-            self.output.append((prefix, node.counter, node.filename))
+            output.append((prefix, node.counter, node.filename))
         for child in node.children.values():
-            self.dfs(child, f"{prefix} {child.word}")
+            Trie.dfs(child, f"{prefix} {child.word}", output)
 
     def search(self, prefix: str, last_word_prefix: str):
         completed_words = True
-        self.output = []
+        output = []
+        list_of_children = []
         node = self.root
         for word in prefix.split():
             word = str(word).lower()
@@ -67,11 +69,11 @@ class Trie(object):
         prefix = prefix if completed_words else prefix.rsplit(' ', 1)[0]
         if not completed_words:
             for n in list_of_children:
-                self.dfs(n, prefix + ' ' + n.word)
+                self.dfs(n, f"{prefix} {n.word}", output)
         else:
-            self.dfs(node, prefix)
+            self.dfs(node, prefix, output)
 
         # prefix = prefix if completed_words else prefix.rsplit(' ', 1)[0]
         # self.dfs(node, prefix)
         # if len(self.output) < MAX_QUERIES:
-        return sorted(self.output, key=lambda x: x[1], reverse=True)
+        return sorted(output, key=lambda x: x[1], reverse=True)
