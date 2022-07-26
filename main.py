@@ -4,6 +4,7 @@ from string import ascii_lowercase
 from pathlib import Path
 # from autocomplete import AutoCompleter
 
+
 @dataclass
 class AutoCompleteData:
     completed_sentence: str
@@ -26,7 +27,6 @@ class Trie(object):
 
     def insert(self, word):
         node = self.root
-
         for char in word:
             if char in node.children:
                 node = node.children[char]
@@ -40,7 +40,6 @@ class Trie(object):
     def dfs(self, node, prefix):
         if node.is_end:
             self.output.append((prefix + node.char, node.counter))
-
         for child in node.children.values():
             self.dfs(child, prefix + node.char)
 
@@ -56,10 +55,6 @@ class Trie(object):
         return sorted(self.output, key=lambda x: x[1], reverse=True)
 
 
-def get_best_k_completions(prefix: str) -> List[AutoCompleteData]:
-    pass
-
-
 def insert_to_tree(t: Trie):
     files = list(Path("Archive").rglob("*.[tT][xX][tT]"))
     for file in files:
@@ -70,12 +65,20 @@ def insert_to_tree(t: Trie):
                         t.insert(word.lower())
 
 
+def get_best_k_completions(prefix: str) -> List[AutoCompleteData]:
+    lst = []
+    pass
+
+
 if __name__ == '__main__':
     tree = Trie()
+
     insert_to_tree(tree)
 
     inp = input("Enter search: ")
-    print(tree.search(inp))
+    while inp != '#':
+        print(tree.search(inp))
+        inp = input("Enter search: ")
 
 
 
