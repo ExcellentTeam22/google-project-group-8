@@ -53,11 +53,13 @@ class Trie(object):
             if word in node.children:
                 node = node.children[word]
             else:
+                found_word_contains_last_word_pref = False
                 for n in node.children:
                     if str(n).startswith(last_word_prefix):
+                        found_word_contains_last_word_pref = True
                         completed_words = False
-                    else:
-                        return []
+                if not found_word_contains_last_word_pref:
+                    return []
 
         prefix = prefix if completed_words else prefix.rsplit(' ', 1)[0]
         self.dfs(node, prefix)
