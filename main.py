@@ -53,10 +53,11 @@ class Trie(object):
             if word in node.children:
                 node = node.children[word]
             else:
-                if word.startswith(last_word_prefix):
-                    completed_words = False
-                else:
-                    return []
+                for n in node.children:
+                    if str(n).startswith(last_word_prefix):
+                        completed_words = False
+                    else:
+                        return []
 
         prefix = prefix if completed_words else prefix.rsplit(' ', 1)[0]
         self.dfs(node, prefix)
@@ -70,7 +71,6 @@ def insert_to_tree(t: Trie, dictionary: dict):
         with open(file, 'r', encoding='utf-8') as f:
             for line in f.readlines():
                 t.insert(line)
-
                 # for word in line.split():
                 #     if word.isalpha():
                 #         t.insert(word.lower())
