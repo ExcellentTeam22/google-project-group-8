@@ -65,28 +65,32 @@ class Trie(object):
 
         node = last_node
         if len(output) <= MAX_QUERIES:
-            for key in node.children.keys():
-                if key.startswith(last_word_prefix):
-                    self.dfs(node.children[key], f"{prefix.rsplit(' ', 1)[0]} {key}", output, MAX_QUERIES)
+            self.complete_sentences_from_last_word(node, prefix, last_word_prefix, output)
+
         if len(output) <= MAX_QUERIES:
-            # temp = ""
-            # for index in len(prefix):
-            #     temp = prefix[:index] + prefix[index + 1:]
+            self.delete_letter(self.root, prefix, output)
 
-                # check for match and add to ouput
-            node = self.root
-            for word in prefix.split():
-                word = str(word).lower()
-                if word in node.children:
-                    node = node.children[word]
-                else:
-                    for child in node.children.keys():
-                        if len(child) == len(word) - 1:
-                            for index in range(len(word)):
-                                if child == word[:index] + word[index + 1:]:
-                                    node = node.children[child]
-                                    prefix = prefix.replace(word,child)
-                                    break
-
-            self.dfs(node, prefix, output, MAX_QUERIES)
         return sorted(output, key=lambda x: x[1], reverse=True)
+
+    def complete_sentences_from_last_word(self, node, prefix, last_word_prefix, output):
+        for key in node.children.keys():
+            if key.startswith(last_word_prefix):
+                self.dfs(node.children[key], f"{prefix.rsplit(' ', 1)[0]} {key}", output, MAX_QUERIES)
+
+    def delete_letter(self, root, prefix, output):
+        score=len(prefix)
+        node = root
+        current_prefix = prefix
+        for word in current_prefix.split():
+            word = str(word).lower()
+            if word in node.children:
+                node = node.children[word]
+            else:
+                for child in node.children.keys():
+                    if len(child) == len(word) - 1:
+                        for index in range(len(word)):
+                            if child == word[:index] + word[index + 1:]:
+                                node = node.children[child]
+                                current_prefix = current_prefix.replace(word, child)
+                                break
+        self.dfs(node, current_prefix, output, MAX_QUERIES)
