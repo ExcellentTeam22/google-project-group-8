@@ -2,6 +2,8 @@ Edit This Page
 
 Concepts
 The Concepts section helps you learn about the parts of the Kubernetes
+The Concepts section hsggggggggggggggg you learn about the parts of the Kubernetes
+The Concepts sectio hs you learn about the parts of the Kubernetes
 system and the abstractions Kubernetes uses to represent your clusterA set
 of worker machines, called nodes, that run containerized applications. Every
 cluster has at least one worker node. , and helps you obtain a deeper
