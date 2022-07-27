@@ -43,10 +43,11 @@ class Trie(object):
     def dfs(node: TrieNode, prefix: str, output, length):
         if node.is_end:
             output.append((prefix, node.counter, node.filename))
-            if len(output) > length:
-                return
         for child in node.children.values():
-            Trie.dfs(child, f"{prefix} {child.word}", output, MAX_QUERIES)
+            if len(output) < length:
+                Trie.dfs(child, f"{prefix} {child.word}", output, MAX_QUERIES)
+            else:
+                break
 
     def search(self, prefix: str, last_word_prefix: str):
         output = []
@@ -54,57 +55,19 @@ class Trie(object):
         node = self.root
         for word in prefix.split():
             word = str(word).lower()
+            last_node = node
             if word in node.children:
                 node = node.children[word]
             else:
                 sentence_match = False
         if sentence_match:
             self.dfs(node, prefix, output, MAX_QUERIES)
-        if len(output) < MAX_QUERIES:
+
+        node = last_node
+        if len(output) <= MAX_QUERIES:
             for key in node.children.keys():
-                if key.startswith(prefix.rsplit(' ', 1)[-1]):
+                if key.startswith(last_word_prefix):
                     self.dfs(node.children[key], f"{prefix.rsplit(' ', 1)[0]} {key}", output, MAX_QUERIES)
+
         return sorted(output, key=lambda x: x[1], reverse=True)
-        # completed_words = True
-        # output = []
-        # list_of_children = []
-        # node = self.root
-        # for word in prefix.split():
-        #     word = str(word).lower()
-        #     if word in node.children:
-        #         node = node.children[word]
-        #     else:
-        #         found_word_contains_last_word_pref = False
-        #         for child_word, child_node in node.children.items():
-        #             if str(child_word).startswith(last_word_prefix):
-        #                 found_word_contains_last_word_pref = True
-        #                 completed_words = False
-        #                 list_of_children.append(child_node)
-        #         if not found_word_contains_last_word_pref:
-        #                 for child in node.children:
-        #                     if len(set(child) & set(word)) == len(child):# we need to delete a letter
-        #                         for letter in word:
-        #                             if word.replace(letter, "") == child:
-        #                                 prefix = prefix.replace(word, child)
-        #                                 child = node.children[child]
-        #
-        #                     else:
-        #                         if len(child) == len(word):  # we need to change a letter
-        #                             for letter in word:
-        #                                 for letter_in_alphabet in string.ascii_lowercase:
-        #                                     if word.replace(letter, letter_in_alphabet) == child:
-        #                                         prefix = prefix.replace(word, child)
-        #                                         child = node.children[child]
-        #
-        #                         else:
-        #                             break
-        #                     # return []  # here we need to delete/insert/replace a character
-        #
-        # prefix = prefix if completed_words else prefix.rsplit(' ', 1)[0]
-        # if not completed_words:
-        #     for n in list_of_children:
-        #         self.dfs(n, f"{prefix} {n.word}", output)
-        # else:
-        #     self.dfs(node, prefix, output)
-        # # if len(self.output) < MAX_QUERIES:
-        # return sorted(output, key=lambda x: x[1], reverse=True)
+
