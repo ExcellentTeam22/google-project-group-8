@@ -65,11 +65,13 @@ class Trie(object):
 
         node = last_node
         if len(output) <= MAX_QUERIES:
-            self.complete_sentences_from_last_word(node, prefix, last_word_prefix, output)
+            if node.word == last_word_prefix:
+                self.complete_sentences_from_last_word(node, prefix, last_word_prefix, output)
 
         if len(output) <= MAX_QUERIES:
             # self.delete_letter(self.root, prefix, output)
-            self.switch_letter(self.root, prefix, output)
+            # self.switch_letter(self.root, prefix, output)
+            self.insert_letter(self.root, prefix, output)
 
         return sorted(output, key=lambda x: x[1], reverse=True)
 
@@ -83,8 +85,7 @@ class Trie(object):
         node = root
         current_prefix = prefix
         found = False
-        for word in current_prefix.split():
-            word = str(word).lower()
+        for i, word in enumerate(current_prefix.split()):
             if word in node.children:
                 node = node.children[word]
             else:
@@ -94,7 +95,9 @@ class Trie(object):
                             if child == word[:index] + word[index + 1:]:
                                 found = True
                                 node = node.children[child]
-                                prefix = prefix.replace(word, child)
+                                lst = prefix.split()
+                                lst[i] = child
+                                prefix = ' '.join([word for word in lst])
                                 break
         if found:
             self.dfs(node, prefix, output, MAX_QUERIES)
@@ -102,9 +105,7 @@ class Trie(object):
     def switch_letter(self, root, prefix, output):
         node = root
         current_prefix = prefix
-        found = False
-        for word in current_prefix.split():
-            word = str(word).lower()
+        for i, word in enumerate(current_prefix.split()):
             if word in node.children:
                 node = node.children[word]
             else:
@@ -113,11 +114,31 @@ class Trie(object):
                         for index in range(len(word)):
                             for letter in string.ascii_lowercase:
                                 if child == word[:index] + letter + word[index + 1:]:
-                                    found = True
                                     node = node.children[child]
-                                    prefix = prefix.replace(word, child)
-                                    break
-        if found:
-            self.dfs(node, prefix, output, MAX_QUERIES)
+                                    lst = prefix.split()
+                                    lst[i] = child
+                                    prefix = ' '.join([word for word in lst])
+                                    self.dfs(node, prefix, output, MAX_QUERIES)
+
+    def insert_letter(self, root, prefix, output):
+        node = root
+        current_prefix = prefix
+        prefix = prefix.lower()
+        for i, word in enumerate(prefix.split()):
+            if word in node.children:
+                node = node.children[word]
+            else:
+                for child in node.children.keys():
+                    if len(child) == len(word) + 1:
+                        for index in range(len(word)):
+                            for letter in string.ascii_lowercase:
+                                if child == word[:index] + letter + word[index:]:
+                                    node = node.children[child]
+                                    lst = prefix.split()
+                                    lst[i] = child
+                                    prefix = ' '.join([word for word in lst])
+                                    continue
+        self.dfs(node, prefix, output, MAX_QUERIES)
+
 
 
