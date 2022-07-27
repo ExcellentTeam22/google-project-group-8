@@ -68,6 +68,7 @@ class Trie(object):
                                 for letter in word:
                                     if word.replace(letter, "") == child:
                                         prefix=prefix.replace((word,child))
+                                        child = node.children[child]
 
                             else:
                                 if len(child) == len(word):  # we need to change a letter
@@ -75,6 +76,8 @@ class Trie(object):
                                         for letter_in_alphabet in string.ascii_lowercase:
                                             if word.replace(letter, letter_in_alphabet) == child:
                                                 prefix = prefix.replace(word, child)
+                                                child = node.children[child]
+
                                 else:
                                     break
                             return []  # here we need to delete/insert/replace a character
