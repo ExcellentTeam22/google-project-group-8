@@ -43,26 +43,27 @@ class Trie(object):
     def dfs(node: TrieNode, prefix: str, output, length):
         if node.is_end:
             output.append((prefix, node.counter, node.filename))
-            if len(output) == length:
+            if len(output) > length:
                 return
         for child in node.children.values():
             Trie.dfs(child, f"{prefix} {child.word}", output, MAX_QUERIES)
 
     def search(self, prefix: str, last_word_prefix: str):
         output = []
+        sentence_match = True
         node = self.root
         for word in prefix.split():
             word = str(word).lower()
             if word in node.children:
                 node = node.children[word]
-        self.dfs(node, prefix, output, MAX_QUERIES)
+            else:
+                sentence_match = False
+        if sentence_match:
+            self.dfs(node, prefix, output, MAX_QUERIES)
         if len(output) < MAX_QUERIES:
-            for node1 in node.children:
-                if node1.startswith(word):
-                    prefix = prefix.replace(word, node1)
-                    node = node.children[node1]
-            # for child_word, child_node in node.children.items():
-        # self.dfs(node, prefix, output, MAX_QUERIES)
+            for key in node.children.keys():
+                if key.startswith(prefix.rsplit(' ', 1)[-1]):
+                    self.dfs(node.children[key], f"{prefix.rsplit(' ', 1)[0]} {key}", output, MAX_QUERIES)
         return sorted(output, key=lambda x: x[1], reverse=True)
         # completed_words = True
         # output = []
