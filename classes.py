@@ -68,7 +68,8 @@ class Trie(object):
             self.complete_sentences_from_last_word(node, prefix, last_word_prefix, output)
 
         if len(output) <= MAX_QUERIES:
-            self.delete_letter(self.root, prefix, output)
+            # self.delete_letter(self.root, prefix, output)
+            self.switch_letter(self.root, prefix, output)
 
         return sorted(output, key=lambda x: x[1], reverse=True)
 
@@ -81,6 +82,7 @@ class Trie(object):
         score=len(prefix)
         node = root
         current_prefix = prefix
+        found = False
         for word in current_prefix.split():
             word = str(word).lower()
             if word in node.children:
@@ -90,7 +92,32 @@ class Trie(object):
                     if len(child) == len(word) - 1:
                         for index in range(len(word)):
                             if child == word[:index] + word[index + 1:]:
+                                found = True
                                 node = node.children[child]
-                                current_prefix = current_prefix.replace(word, child)
+                                prefix = prefix.replace(word, child)
                                 break
-        self.dfs(node, current_prefix, output, MAX_QUERIES)
+        if found:
+            self.dfs(node, prefix, output, MAX_QUERIES)
+
+    def switch_letter(self, root, prefix, output):
+        node = root
+        current_prefix = prefix
+        found = False
+        for word in current_prefix.split():
+            word = str(word).lower()
+            if word in node.children:
+                node = node.children[word]
+            else:
+                for child in node.children.keys():
+                    if len(child) == len(word):
+                        for index in range(len(word)):
+                            for letter in string.ascii_lowercase:
+                                if child == word[:index] + letter + word[index + 1:]:
+                                    found = True
+                                    node = node.children[child]
+                                    prefix = prefix.replace(word, child)
+                                    break
+        if found:
+            self.dfs(node, prefix, output, MAX_QUERIES)
+
+

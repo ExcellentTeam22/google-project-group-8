@@ -5,7 +5,8 @@ from pathlib import Path
 import os
 import classes
 
-FILES_PATH = r"Archive/python-3.8.4-docs-text/my_file"
+# FILES_PATH = r"Archive/python-3.8.4-docs-text/my_file"
+FILES_PATH = r"Archive"
 
 
 def insert_to_tree(t: classes.Trie, dictionary: dict):
