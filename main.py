@@ -5,9 +5,11 @@ from pathlib import Path
 import os
 import classes
 
+FILES_PATH = r"Archive/python-3.8.4-docs-text/my_file"
+
 
 def insert_to_tree(t: classes.Trie, dictionary: dict):
-    files = list(Path("Archive").rglob("*.[tT][xX][tT]"))
+    files = list(Path(FILES_PATH).rglob("*.[tT][xX][tT]"))
     for file in files:
         with open(file, 'r', encoding='utf-8') as f:
             filename = os.path.basename(f.name)
@@ -38,10 +40,6 @@ def autocomplete() -> None:
 
 if __name__ == '__main__':
     autocomplete()
-
-
-
-
 
 # def get_score(e):
 #     return e.score

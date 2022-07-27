@@ -68,6 +68,25 @@ class Trie(object):
             for key in node.children.keys():
                 if key.startswith(last_word_prefix):
                     self.dfs(node.children[key], f"{prefix.rsplit(' ', 1)[0]} {key}", output, MAX_QUERIES)
+        if len(output) <= MAX_QUERIES:
+            # temp = ""
+            # for index in len(prefix):
+            #     temp = prefix[:index] + prefix[index + 1:]
 
+                # check for match and add to ouput
+            node = self.root
+            for word in prefix.split():
+                word = str(word).lower()
+                if word in node.children:
+                    node = node.children[word]
+                else:
+                    for child in node.children.keys():
+                        if len(child) == len(word) - 1:
+                            for index in range(len(word)):
+                                if child == word[:index] + word[index + 1:]:
+                                    node = node.children[child]
+                                    prefix = prefix.replace(word,child)
+                                    break
+
+            self.dfs(node, prefix, output, MAX_QUERIES)
         return sorted(output, key=lambda x: x[1], reverse=True)
-
