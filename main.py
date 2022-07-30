@@ -36,7 +36,7 @@ def autocomplete() -> None:
             inp = input("Enter new search pattern: ")
         else:
             inp += current
-        print(tree.search(inp, inp.rsplit(None, 1)[-1]))
+        print('\n'.join([str(x) for x in tree.search(inp, inp.rsplit(None, 1)[-1])]))
 
 
 if __name__ == '__main__':
